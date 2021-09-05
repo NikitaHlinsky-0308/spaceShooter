@@ -22,15 +22,25 @@ public class Player : MonoBehaviour
     private bool TripleShotActive = false;
     [SerializeField]
     private bool ShieldIsActive = false;
+    [SerializeField]
+    private int _score;
+
+    private UIManager _uiManager;
     void Start()
     {
 
         transform.position = new Vector3(-9.4f, 0.4f, 15);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if (_spawnManager == null)
         {
             Debug.LogError("The _spawnMagager is NULL");
+        }
+
+        if (_uiManager == null)
+        {
+            Debug.LogError("The _uiManager is NULL");
         }
 
     }
@@ -43,6 +53,8 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
+
+        //Debug.Log("live index after Damadge() - " + _lives.ToString());
     }
 
     void calculateMovement()
@@ -91,7 +103,10 @@ public class Player : MonoBehaviour
         if (ShieldIsActive == false)
         {
             _lives--;
-        } 
+        }
+
+        //Debug.Log("live index after Damadge() - " + _lives.ToString()) ;
+        _uiManager.UpdateLives(_lives);
 
         // check if dead
         if (_lives  < 1)
@@ -139,4 +154,13 @@ public class Player : MonoBehaviour
         ShieldIsActive = false;
         ShieldVisualizer.SetActive(false);
     }
+
+    public void AddScore(int scoreNum = 10)
+    {
+        _score += scoreNum;
+        _uiManager.UpdateScore(_score);
+    }
+
+    // method to add 10 to score 
+    // communicate with the UI to update score
 }
